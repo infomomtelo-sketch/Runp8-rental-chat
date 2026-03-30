@@ -6,54 +6,66 @@
 <title>List your rental | RunP8</title>
 
 <style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-  background:linear-gradient(to bottom,#fff,#f3f4f6);
-}
-.container{
-  max-width:560px;
-  margin:auto;
-  padding:20px;
-}
-h1{font-size:28px;margin-bottom:6px}
-.sub{color:#555;margin-bottom:20px}
+* { box-sizing: border-box; }
 
-input,select,textarea{
-  width:100%;
-  padding:14px;
-  margin-bottom:12px;
-  border-radius:12px;
-  border:1px solid #ddd;
-  font-size:16px;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+  background: linear-gradient(to bottom, #ffffff, #f3f4f6);
 }
 
-button{
-  width:100%;
-  padding:16px;
-  border-radius:14px;
-  border:none;
-  background:#0b1120;
-  color:white;
-  font-size:16px;
+.container {
+  max-width: 520px;
+  margin: auto;
+  padding: 20px;
 }
 
-.preview{display:none;margin-top:12px}
-iframe{
-  width:100%;
-  height:200px;
-  border:0;
-  border-radius:12px;
+h1 {
+  font-size: 26px;
+  margin-bottom: 6px;
 }
 
-.success{
-  display:none;
-  background:#fff;
-  padding:16px;
-  border-radius:16px;
-  margin-top:20px;
-  border:1px solid #e5e7eb;
+.sub {
+  color: #555;
+  margin-bottom: 18px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  background: #0b1120;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.preview {
+  display: none;
+  margin-top: 12px;
+}
+
+iframe {
+  width: 100%;
+  height: 200px;
+  border: 0;
+  border-radius: 12px;
+}
+
+.note {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #666;
 }
 </style>
 </head>
@@ -69,9 +81,10 @@ iframe{
 <input id="city" placeholder="City">
 
 <select id="state">
-  <option>State</option>
+  <option value="">State</option>
   <option>CA</option>
   <option>TX</option>
+  <option>NV</option>
 </select>
 
 <input id="zip" placeholder="ZIP code">
@@ -84,7 +97,7 @@ iframe{
 <input id="date" type="date">
 
 <select id="type">
-  <option>Property type</option>
+  <option value="">Property type</option>
   <option>Apartment</option>
   <option>House</option>
   <option>Studio</option>
@@ -92,7 +105,7 @@ iframe{
 </select>
 
 <select id="beds">
-  <option>Beds / baths</option>
+  <option value="">Beds / baths</option>
   <option>Studio</option>
   <option>1 bed / 1 bath</option>
   <option>2 bed / 1 bath</option>
@@ -101,80 +114,88 @@ iframe{
 </select>
 
 <select id="pets">
-  <option>Pet policy</option>
+  <option value="">Pet policy</option>
   <option>No pets</option>
   <option>Cats allowed</option>
   <option>Dogs allowed</option>
 </select>
 
 <select id="parking">
-  <option>Parking</option>
+  <option value="">Parking</option>
   <option>Yes</option>
   <option>No</option>
   <option>Street</option>
 </select>
 
 <select id="laundry">
-  <option>Laundry</option>
+  <option value="">Laundry</option>
   <option>In-unit</option>
   <option>On-site</option>
   <option>None</option>
 </select>
 
-<input type="file" id="photos" multiple>
-
-<textarea id="notes" placeholder="Additional details"></textarea>
+<textarea id="notes" placeholder="Additional details (optional)"></textarea>
 
 <button onclick="submitForm()">Submit listing</button>
 
-<div class="success" id="successBox"></div>
+<div class="note">
+We keep it simple:
+• No application fee  
+• No deposit  
+• Qualified renters only  
+</div>
 
 </div>
 
 <script>
-function loadMap(){
-  const addr = document.getElementById("address").value;
+function loadMap() {
+  const address = document.getElementById("address").value;
   const city = document.getElementById("city").value;
   const state = document.getElementById("state").value;
   const zip = document.getElementById("zip").value;
 
-  const full = encodeURIComponent(addr + "," + city + "," + state + " " + zip);
+  const full = encodeURIComponent(address + "," + city + "," + state + " " + zip);
 
-  document.getElementById("mapBox").style.display="block";
+  document.getElementById("mapBox").style.display = "block";
   document.getElementById("mapBox").innerHTML =
     `<iframe src="https://www.google.com/maps?q=${full}&output=embed"></iframe>`;
 }
 
-function submitForm(){
-  const data = {
-    address: address.value,
-    city: city.value,
-    state: state.value,
-    zip: zip.value,
-    rent: rent.value,
-    date: date.value,
-    type: type.value,
-    beds: beds.value,
-    pets: pets.value,
-    parking: parking.value,
-    laundry: laundry.value,
-    notes: notes.value
-  };
+function submitForm() {
 
-  localStorage.setItem("listing", JSON.stringify(data));
+  const address = document.getElementById("address");
+  const city = document.getElementById("city");
+  const state = document.getElementById("state");
+  const zip = document.getElementById("zip");
 
-  document.getElementById("successBox").style.display="block";
-  document.getElementById("successBox").innerHTML =
-  `✅ Listing submitted
+  const rent = document.getElementById("rent");
+  const date = document.getElementById("date");
+  const type = document.getElementById("type");
+  const beds = document.getElementById("beds");
+  const pets = document.getElementById("pets");
+  const parking = document.getElementById("parking");
+  const laundry = document.getElementById("laundry");
+  const notes = document.getElementById("notes");
 
-We’ll review your property and start sending renters.
+  const body = `
+Address: ${address.value}
+City: ${city.value}
+State: ${state.value}
+ZIP: ${zip.value}
 
-Next:
-• We verify details
-• We activate listing
-• Renters will contact you
+Rent: ${rent.value}
+Date: ${date.value}
+Type: ${type.value}
+Beds: ${beds.value}
+Pets: ${pets.value}
+Parking: ${parking.value}
+Laundry: ${laundry.value}
 
-No upfront cost — you only pay if rented`;
+Notes: ${notes.value}
+`;
+
+  window.location.href =
+    "mailto:owners@runp8.com?subject=New Listing&body=" + encodeURIComponent(body);
 }
 </script>
 
