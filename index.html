@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>RunP8 Rental</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f6fb;
+}
+
+.app {
+  max-width: 520px;
+  margin: auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.topbar {
+  background: #0f172a;
+  color: #fff;
+  padding: 14px;
+  font-size: 16px;
+}
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: #f9fafb;
+}
+
+.msg {
+  margin-bottom: 12px;
+  max-width: 85%;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.bot {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.user {
+  background: #0f172a;
+  color: white;
+  margin-left: auto;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+button {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <div class="topbar">RunP8 Rental</div>
+  <div id="chat" class="chat"></div>
+</div>
+
+<script>
+const chat = document.getElementById("chat");
+
+function addMsg(text, type="bot") {
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.innerText = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addChoices(options) {
+  const wrap = document.createElement("div");
+  wrap.className = "choices";
+
+  options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.innerText = opt.label;
+    btn.onclick = () => {
+      addMsg(opt.label, "user");
+      wrap.remove();
+      opt.action();
+    };
+    wrap.appendChild(btn);
+  });
+
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function start() {
+  addMsg(
+`Hi 👋 this property is available.
+
+Monthly rent: $1,200
+Move-in cost: $2,400 (first + last, no deposit)
+Available: Now
+Pets: No pets
+
+We know finding a place to rent isn’t easy.
+We keep it simple, clear, and fast.`
+  );
+
+  addChoices([
+    { label: "Check requirements", action: requirements },
+    { label: "Schedule showing", action: showingDay },
+    { label: "Apply now", action: apply },
+    { label: "Move in now", action: moveInNow },
+    { label: "Ask question", action: ask }
+  ]);
+}
+
+function requirements() {
+  addMsg(
+`To qualify:
+
+• Valid ID
+• Proof of income
+
+No application fee.
+No deposit required.`
+  );
+
+  addChoices([
+    { label: "Apply now", action: apply },
+    { label: "Schedule showing", action: showingDay }
+  ]);
+}
+
+function apply() {
+  addMsg("Please confirm you have:");
+
+  addChoices([
+    { label: "I have ID + income proof", action: approved },
+    { label: "Not ready", action: start }
+  ]);
+}
+
+function approved() {
+  addMsg(
+`You're approved 🎉
+
+To move in:
+
+First month: $1,200
+Last month: $1,200
+
+Total: $2,400`
+  );
+
+  addChoices([
+    { label: "Pay now", action: payment },
+    { label: "Schedule showing", action: showingDay }
+  ]);
+}
+
+function payment() {
+  addMsg("Payment received ✅");
+
+  addMsg(
+`Before move-in:
+
+• Review property condition
+• Sign agreement
+
+This protects both you and the property.`
+  );
+
+  addChoices([
+    { label: "Continue", action: moveIn }
+  ]);
+}
+
+function moveIn() {
+  addMsg(
+`You're all set 🎉
+
+Move-in instructions:
+
+📍 123 Main St
+🔑 Access code will be sent on move-in day
+🕒 After 3PM
+
+Welcome home.`
+  );
+}
+
+function moveInNow() {
+  addMsg("Skipping showing 👍");
+
+  approved();
+}
+
+function showingDay() {
+  addMsg("When would you like to see the property?");
+
+  addChoices([
+    { label: "Friday", action: showingTime },
+    { label: "Saturday", action: showingTime },
+    { label: "Sunday", action: showingTime }
+  ]);
+}
+
+function showingTime() {
+  addMsg("What time works best?");
+
+  addChoices([
+    { label: "Morning", action: showingPeople },
+    { label: "Afternoon", action: showingPeople },
+    { label: "Evening", action: showingPeople }
+  ]);
+}
+
+function showingPeople() {
+  addMsg("How many people will attend?");
+
+  addChoices([
+    { label: "Just me", action: showingConfirm },
+    { label: "2 people", action: showingConfirm },
+    { label: "3+ people", action: showingConfirm }
+  ]);
+}
+
+function showingConfirm() {
+  addMsg(
+`You're scheduled 🎉
+
+We'll send a reminder before your showing.`
+  );
+
+  addChoices([
+    { label: "Apply now", action: apply },
+    { label: "Back", action: start }
+  ]);
+}
+
+function ask() {
+  addMsg("You can ask anything 😊");
+}
+
+start();
+</script>
+
+</body>
+</html>
