@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>List your rental | RunP8</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f8fafc;
+}
+
+.container {
+  max-width:500px;
+  margin:auto;
+  padding:20px;
+}
+
+h1 { font-size:22px; }
+
+.sub {
+  color:#555;
+  margin-bottom:20px;
+}
+
+input, textarea {
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+
+button {
+  width:100%;
+  padding:14px;
+  border:none;
+  background:#111827;
+  color:white;
+  border-radius:10px;
+  font-size:16px;
+}
+
+.preview {
+  margin-top:15px;
+}
+
+iframe {
+  width:100%;
+  height:200px;
+  border:0;
+  border-radius:10px;
+}
+
+.note {
+  margin-top:20px;
+  font-size:13px;
+  color:#666;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>List your rental</h1>
+
+<div class="sub">
+No upfront cost. You only pay when a tenant is placed.
+</div>
+
+<input id="address" placeholder="Full address (123 Main St)">
+<input id="city" placeholder="City">
+<input id="state" placeholder="State">
+<input id="zip" placeholder="ZIP code">
+
+<button onclick="loadMap()">Preview location</button>
+
+<div class="preview" id="mapPreview"></div>
+
+<input placeholder="Monthly rent">
+<input placeholder="Available date">
+<input placeholder="Beds / baths">
+<input placeholder="Pet policy">
+
+<textarea placeholder="Additional details (optional)"></textarea>
+
+<button onclick="submitForm()">Submit listing</button>
+
+<div class="note">
+We keep it simple:
+• No application fee  
+• No deposit model  
+• Qualified renters only  
+</div>
+
+</div>
+
+<script>
+function loadMap() {
+  const address = document.getElementById("address").value;
+  const city = document.getElementById("city").value;
+  const state = document.getElementById("state").value;
+  const zip = document.getElementById("zip").value;
+
+  const full = `${address}, ${city}, ${state} ${zip}`;
+  const encoded = encodeURIComponent(full);
+
+  document.getElementById("mapPreview").innerHTML = `
+    <iframe
+      src="https://www.google.com/maps?q=${encoded}&output=embed">
+    </iframe>
+  `;
+}
+
+function submitForm() {
+  alert("Listing submitted 👍 We will contact you soon.");
+}
+</script>
+
+</body>
+</html>
