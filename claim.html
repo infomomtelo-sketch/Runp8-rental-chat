@@ -6,58 +6,54 @@
 <title>List your rental | RunP8</title>
 
 <style>
-body {
+*{box-sizing:border-box}
+body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background:#f8fafc;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  background:linear-gradient(to bottom,#fff,#f3f4f6);
 }
-
-.container {
-  max-width:500px;
+.container{
+  max-width:560px;
   margin:auto;
   padding:20px;
 }
+h1{font-size:28px;margin-bottom:6px}
+.sub{color:#555;margin-bottom:20px}
 
-h1 { font-size:22px; }
-
-.sub {
-  color:#555;
-  margin-bottom:20px;
-}
-
-input, textarea {
-  width:100%;
-  padding:12px;
-  margin-bottom:12px;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
-
-button {
+input,select,textarea{
   width:100%;
   padding:14px;
-  border:none;
-  background:#111827;
-  color:white;
-  border-radius:10px;
+  margin-bottom:12px;
+  border-radius:12px;
+  border:1px solid #ddd;
   font-size:16px;
 }
 
-.preview {
-  margin-top:15px;
+button{
+  width:100%;
+  padding:16px;
+  border-radius:14px;
+  border:none;
+  background:#0b1120;
+  color:white;
+  font-size:16px;
 }
 
-iframe {
+.preview{display:none;margin-top:12px}
+iframe{
   width:100%;
   height:200px;
   border:0;
-  border-radius:10px;
+  border-radius:12px;
 }
 
-.note {
+.success{
+  display:none;
+  background:#fff;
+  padding:16px;
+  border-radius:16px;
   margin-top:20px;
-  font-size:13px;
-  color:#666;
+  border:1px solid #e5e7eb;
 }
 </style>
 </head>
@@ -67,57 +63,118 @@ iframe {
 <div class="container">
 
 <h1>List your rental</h1>
+<div class="sub">No upfront cost. You only pay when a tenant is placed.</div>
 
-<div class="sub">
-No upfront cost. You only pay when a tenant is placed.
-</div>
-
-<input id="address" placeholder="Full address (123 Main St)">
+<input id="address" placeholder="Full address">
 <input id="city" placeholder="City">
-<input id="state" placeholder="State">
+
+<select id="state">
+  <option>State</option>
+  <option>CA</option>
+  <option>TX</option>
+</select>
+
 <input id="zip" placeholder="ZIP code">
 
 <button onclick="loadMap()">Preview location</button>
 
-<div class="preview" id="mapPreview"></div>
+<div class="preview" id="mapBox"></div>
 
-<input placeholder="Monthly rent">
-<input placeholder="Available date">
-<input placeholder="Beds / baths">
-<input placeholder="Pet policy">
+<input id="rent" type="number" placeholder="Monthly rent">
+<input id="date" type="date">
 
-<textarea placeholder="Additional details (optional)"></textarea>
+<select id="type">
+  <option>Property type</option>
+  <option>Apartment</option>
+  <option>House</option>
+  <option>Studio</option>
+  <option>Room</option>
+</select>
+
+<select id="beds">
+  <option>Beds / baths</option>
+  <option>Studio</option>
+  <option>1 bed / 1 bath</option>
+  <option>2 bed / 1 bath</option>
+  <option>2 bed / 2 bath</option>
+  <option>3+ bed</option>
+</select>
+
+<select id="pets">
+  <option>Pet policy</option>
+  <option>No pets</option>
+  <option>Cats allowed</option>
+  <option>Dogs allowed</option>
+</select>
+
+<select id="parking">
+  <option>Parking</option>
+  <option>Yes</option>
+  <option>No</option>
+  <option>Street</option>
+</select>
+
+<select id="laundry">
+  <option>Laundry</option>
+  <option>In-unit</option>
+  <option>On-site</option>
+  <option>None</option>
+</select>
+
+<input type="file" id="photos" multiple>
+
+<textarea id="notes" placeholder="Additional details"></textarea>
 
 <button onclick="submitForm()">Submit listing</button>
 
-<div class="note">
-We keep it simple:
-• No application fee  
-• No deposit model  
-• Qualified renters only  
-</div>
+<div class="success" id="successBox"></div>
 
 </div>
 
 <script>
-function loadMap() {
-  const address = document.getElementById("address").value;
+function loadMap(){
+  const addr = document.getElementById("address").value;
   const city = document.getElementById("city").value;
   const state = document.getElementById("state").value;
   const zip = document.getElementById("zip").value;
 
-  const full = `${address}, ${city}, ${state} ${zip}`;
-  const encoded = encodeURIComponent(full);
+  const full = encodeURIComponent(addr + "," + city + "," + state + " " + zip);
 
-  document.getElementById("mapPreview").innerHTML = `
-    <iframe
-      src="https://www.google.com/maps?q=${encoded}&output=embed">
-    </iframe>
-  `;
+  document.getElementById("mapBox").style.display="block";
+  document.getElementById("mapBox").innerHTML =
+    `<iframe src="https://www.google.com/maps?q=${full}&output=embed"></iframe>`;
 }
 
-function submitForm() {
-  alert("Listing submitted 👍 We will contact you soon.");
+function submitForm(){
+  const data = {
+    address: address.value,
+    city: city.value,
+    state: state.value,
+    zip: zip.value,
+    rent: rent.value,
+    date: date.value,
+    type: type.value,
+    beds: beds.value,
+    pets: pets.value,
+    parking: parking.value,
+    laundry: laundry.value,
+    notes: notes.value
+  };
+
+  localStorage.setItem("listing", JSON.stringify(data));
+
+  document.getElementById("successBox").style.display="block";
+  document.getElementById("successBox").innerHTML =
+  `✅ Listing submitted
+
+We’ll review your property and start sending renters.
+
+Next:
+• We verify details
+• We activate listing
+• Renters will contact you
+
+No upfront cost — you only pay if rented`;
 }
 </script>
 
